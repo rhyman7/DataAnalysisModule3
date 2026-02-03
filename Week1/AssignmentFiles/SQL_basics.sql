@@ -28,7 +28,13 @@ select * from stores;
 
 -- Q7) From orders, show order_id, status, and a computed column total_items
 --     that counts how many items are in each order.
-select * from orders;
+select 
+	orders.order_id,
+    orders.status,
+    SUM(order_items.quantity) AS total_items
+from orders
+join order_items on orders.order_id = order_items.order_id
+group by orders.order_id, orders.status;
 
 -- Q8) Show orders placed on '2025-09-04' (any time that day).
 select order_datetime from orders
@@ -41,5 +47,5 @@ limit 3;
 
 -- Q10) Show customer full names as a single column 'customer_name'
 --      in the format "Last, First".
-select last_name, fist_name from customers;
+select CONCAT(last_name, ', ', first_name) as last_first from customers;
 
