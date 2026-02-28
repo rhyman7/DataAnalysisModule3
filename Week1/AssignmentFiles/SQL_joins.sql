@@ -71,18 +71,38 @@ order by
 
 -- Q4) Left join to find customers who have never placed an order.
 --     Return first_name, last_name, city, state.
-
-
+SELECT c.first_name, c.last_name, c.city, c.state
+FROM customers c
+LEFT JOIN orders o
+    ON c.customer_id = o.customer_id
+WHERE o.customer_id IS NULL;
 
 -- Q5) For each store, list the top-selling product by units (PAID only).
 --     Return store_name, product_name, total_units.
 --     Hint: Use a window function (ROW_NUMBER PARTITION BY store) or a correlated subquery.
 
+
 -- Q6) Inventory check: show rows where on_hand < 12 in any store.
 --     Return store_name, product_name, on_hand.
+SELECT s.name, p.name, i.on_hand
+FROM inventory i
+JOIN products p
+	ON i.product_id = p.product_id
+JOIN stores s
+	ON i.store_id = s.store_id
+WHERE i.on_hand < 12
+GROUP BY 
+	s.name,
+    p.name,
+    i.on_hand;
 
 -- Q7) Manager roster: list each store's manager_name and hire_date.
 --     (Assume title = 'Manager').
+SELECT e.first_name, e.last_name, e.hire_date, e.title
+FROM employees e
+JOIN stores s
+	ON e.store_id = s.store_id
+WHERE e.title = 'Manager';
 
 -- Q8) Using a subquery/CTE: list products whose total PAID revenue is above
 --     the average PAID product revenue. Return product_name, total_revenue.
@@ -90,6 +110,7 @@ order by
 -- Q9) Churn-ish check: list customers with their last PAID order date.
 --     If they have no PAID orders, show NULL.
 --     Hint: Put the status filter in the LEFT JOIN's ON clause to preserve non-buyer rows.
+
 
 -- Q10) Product mix report (PAID only):
 --     For each store and category, show total units and total revenue (= SUM(quantity * products.price)).
